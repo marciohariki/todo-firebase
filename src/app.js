@@ -1,8 +1,7 @@
 import React from 'react';
 
-import './app.css'
-import Todo from './pages/todo';
-
+import './app.css';
+import Todo from './pages/Todo';
 
 const App = () => (
   <div className="App">

@@ -2,28 +2,29 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, List } from 'antd';
 
-export default ({ items, onCheckClick, onDeleteClick }) => (
+export default ({ items, onCheckClick, onRemoveClick }) => (
   <S.List
     itemLayout="horizontal"
     dataSource={items}
     renderItem={item => (
       <S.ListItem>
-        <p>{item.content}</p>
-        <Icon onClick={() => onCheckClick(item)} type="check-circle" />
-        <Icon onClick={() => onDeleteClick(item)} type="delete" />
+        <S.Text done={item.done}>{item.content}</S.Text>
+        <Icon onClick={() => onCheckClick(item)} type={item.done ? 'undo' : 'check-circle'} />
+        <Icon onClick={() => onRemoveClick(item)} type="delete" />
       </S.ListItem>
     )}
   />
 )
 
 const S = {
+  Text: styled.p`${({ done }) => `
+      width: 100%;
+      margin-bottom: 0;
+      text-decoration: ${done ? 'line-through' : 'none'}
+  `}`,
   List: styled(List)`
   `,
   ListItem: styled(List.Item)`
-    p {
-      width: 100%;
-      margin-bottom: 0;
-    }
     i {
       margin: 8px;
       cursor: pointer;
