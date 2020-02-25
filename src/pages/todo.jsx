@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Layout } from 'antd';
 
 import TodoList from '../components/todo-list'
+import TodoInput from '../components/todo-input'
 
 const { Content } = Layout;
 
@@ -26,6 +27,7 @@ const Todo = () => {
     <S.Layout className="layout">
       <S.Content>
         <S.Title>Todo List</S.Title>
+        <TodoInput />
         <TodoList
           onCheckClick={(i) => console.log(i)}
           onDeleteClick={(i) => console.log(i)}
