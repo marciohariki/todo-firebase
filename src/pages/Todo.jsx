@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Layout } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
+import { Skeleton } from 'antd';
+import { map } from 'lodash'
 
 import TodoList from '../components/TodoList';
 import TodoInput from '../components/TodoInput';
-
-const { Content } = Layout;
+import { addTodo, listTodos } from '../services/TodoService';
+import Layout from '../components/Layout';
 
 export default () => {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const onSubmit = i => {
+  useEffect(() => {
+    listTodos().then(snapshot => {
+      setLoading(false);
+      console.log(snapshot)
+      setItems(snapshot.docs.map(i => i.data()))
+    });
+  }, [loading]);
+
+  const onSubmit = async i => {
     const newItem = {
       id: uuidv4(),
       content: i,
       done: false
     };
     setItems([...items, newItem]);
+    await addTodo(newItem);
   };
 
   const onCheckClick = item => {
@@ -32,34 +43,27 @@ export default () => {
   };
 
   return (
-    <S.Layout className="layout">
-      <S.Content>
-        <S.Title>Todo List</S.Title>
-        <TodoInput onSubmit={onSubmit} />
-        <TodoList
-          onCheckClick={onCheckClick}
-          onRemoveClick={onRemoveClick}
-          items={items}
-        />
-      </S.Content>
-    </S.Layout>
+    <Layout>
+      <S.Title>Todo List</S.Title>
+      {loading ?
+        <Skeleton active />
+      : (
+        <>
+          <TodoInput onSubmit={onSubmit} />
+          <TodoList
+            onCheckClick={onCheckClick}
+            onRemoveClick={onRemoveClick}
+            items={items}
+          />
+        </>
+        )
+      }
+
+    </Layout>
   );
 };
 
 const S = {
   Title: styled.h1`
   `,
-  Layout: styled(Layout)`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  `,
-  Content: styled(Content)`
-    display: flex;
-    flex-direction: column;
-    max-width: 968px;
-    width: 100%;
-    padding: 20px;
-  `
 };
